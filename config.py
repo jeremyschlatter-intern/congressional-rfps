@@ -19,6 +19,7 @@ LEGISLATIVE_BRANCH_AGENCIES = {
 SAM_API_BASE = "https://sam.gov/api/prod/sgs/v1/search/"
 SAM_DETAIL_URL = "https://sam.gov/opp/{notice_id}/view"
 SAM_PAGE_SIZE = 100
+SAM_MAX_PAGES = 50  # Up to 5000 results per agency
 
 # Bluesky configuration
 BSKY_HANDLE = os.environ.get("BSKY_HANDLE", "")

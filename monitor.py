@@ -2,20 +2,26 @@
 """Main orchestrator: fetch, post, and update."""
 
 import argparse
-import sys
+import time
 
 from fetch_sam import fetch_all_legislative_opportunities
 from database import upsert_many, get_unposted_opportunities, mark_as_posted, get_stats
 from bluesky_poster import post_to_bluesky
 from spreadsheet import export_csv
 from export_json import export_json
+from export_rss import export_rss
 from database import get_all_opportunities
+from config import BSKY_HANDLE
+
+
+MAX_BLUESKY_POSTS_PER_RUN = 10
+BLUESKY_POST_DELAY = 3  # seconds between posts
 
 
 def run(post_bluesky: bool = True, export: bool = True, active_only: bool = False):
     """Main monitoring loop iteration."""
     print("=" * 60)
-    print("Congressional RFP Alert System")
+    print("Legislative Branch Contract Opportunities Monitor")
     print("=" * 60)
 
     # 1. Fetch opportunities from SAM.gov
@@ -28,20 +34,21 @@ def run(post_bluesky: bool = True, export: bool = True, active_only: bool = Fals
     print(f"  New: {new_count}, Updated: {updated_count}")
 
     # 3. Post new opportunities to Bluesky
-    if post_bluesky:
+    if post_bluesky and BSKY_HANDLE:
         print("\n[3/4] Posting to Bluesky...")
         unposted = get_unposted_opportunities()
         if unposted:
-            print(f"  {len(unposted)} opportunities to post")
-            for opp in unposted:
+            batch = unposted[:MAX_BLUESKY_POSTS_PER_RUN]
+            print(f"  {len(unposted)} pending, posting up to {len(batch)} this run")
+            for opp in batch:
                 uri = post_to_bluesky(opp)
                 if uri:
                     mark_as_posted(opp["notice_id"], uri)
-                else:
-                    # Still mark as "posted" to avoid retry spam when creds not configured
-                    mark_as_posted(opp["notice_id"], "skipped")
+                time.sleep(BLUESKY_POST_DELAY)
         else:
             print("  No new opportunities to post")
+    elif post_bluesky and not BSKY_HANDLE:
+        print("\n[3/4] Bluesky not configured (set BSKY_HANDLE and BSKY_PASSWORD)")
     else:
         print("\n[3/4] Skipping Bluesky posting")
 
@@ -51,6 +58,7 @@ def run(post_bluesky: bool = True, export: bool = True, active_only: bool = Fals
         all_opps = get_all_opportunities()
         export_csv(all_opps)
         export_json()
+        export_rss()
     else:
         print("\n[4/4] Skipping export")
 
@@ -68,9 +76,9 @@ def run(post_bluesky: bool = True, export: bool = True, active_only: bool = Fals
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Congressional RFP Alert System")
+    parser = argparse.ArgumentParser(description="Legislative Branch Contract Opportunities Monitor")
     parser.add_argument("--no-bluesky", action="store_true", help="Skip Bluesky posting")
-    parser.add_argument("--no-export", action="store_true", help="Skip CSV/JSON export")
+    parser.add_argument("--no-export", action="store_true", help="Skip CSV/JSON/RSS export")
     parser.add_argument("--active-only", action="store_true", help="Only fetch active opportunities")
     parser.add_argument("--fetch-all", action="store_true", help="Fetch all opportunities (active + inactive)")
     args = parser.parse_args()

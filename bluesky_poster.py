@@ -50,8 +50,10 @@ def format_post(opp: dict) -> str:
         except (ValueError, TypeError):
             pass
 
+    tags = "#GovCon #Congress #LegBranch"
+
     # Build post
-    post = f"{icon} New {opp['type_name']} from {agency}\n\n{title}{deadline}\n\n{opp['sam_url']}"
+    post = f"{icon} New {opp['type_name']} from {agency}\n\n{title}{deadline}\n\n{opp['sam_url']}\n\n{tags}"
 
     # Trim if too long (Bluesky limit is 300 graphemes)
     if len(post) > 295:
@@ -59,9 +61,12 @@ def format_post(opp: dict) -> str:
         available = 295 - len(post) + len(title)
         if available > 20:
             title = title[:available - 3] + "..."
-            post = f"{icon} New {opp['type_name']} from {agency}\n\n{title}{deadline}\n\n{opp['sam_url']}"
+            post = f"{icon} New {opp['type_name']} from {agency}\n\n{title}{deadline}\n\n{opp['sam_url']}\n\n{tags}"
         else:
-            post = post[:292] + "..."
+            # Drop tags if still too long
+            post = f"{icon} New {opp['type_name']} from {agency}\n\n{title}{deadline}\n\n{opp['sam_url']}"
+            if len(post) > 295:
+                post = post[:292] + "..."
 
     return post
 

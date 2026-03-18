@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congressional Contract Opportunities</title>
+    <title>Legislative Branch Contract Opportunities</title>
+    <link rel="alternate" type="application/rss+xml" title="Legislative Branch Contract Opportunities" href="feed.xml">
     <style>
         :root {
             --navy: #1a2744;
@@ -35,16 +36,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        header p {
-            color: rgba(255,255,255,0.7);
-            font-size: 0.9rem;
-        }
+        header h1 { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.25rem; }
+        header p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
 
         .header-content {
             max-width: 1200px;
@@ -58,23 +51,41 @@
             text-align: right;
             font-size: 0.85rem;
             color: rgba(255,255,255,0.6);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
-        .header-right a {
-            color: var(--accent);
-            text-decoration: none;
+        .header-right a { color: var(--accent); text-decoration: none; }
+        .header-right .feed-links { display: flex; gap: 0.75rem; }
+        .header-right .feed-links a {
+            padding: 0.3rem 0.6rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .header-right .feed-links a:hover { border-color: var(--accent); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem; }
+
+        /* About banner */
+        .about-banner {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            font-size: 0.88rem;
+            color: var(--text-light);
+            border-left: 4px solid var(--accent);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1.5rem 2rem;
-        }
+        .about-banner strong { color: var(--text); }
 
         /* Stats bar */
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -93,11 +104,7 @@
             letter-spacing: 0.5px;
         }
 
-        .stat-card .value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--navy);
-        }
+        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--navy); }
 
         /* Filters */
         .filters {
@@ -109,14 +116,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            align-items: center;
+            align-items: flex-end;
         }
 
-        .filters label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-light);
-        }
+        .filters label { font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
 
         .filters select, .filters input {
             padding: 0.5rem 0.75rem;
@@ -126,16 +129,10 @@
             background: var(--white);
         }
 
-        .filters input[type="text"] {
-            min-width: 250px;
-        }
+        .filters input[type="text"] { min-width: 200px; }
 
         /* Opportunity cards */
-        .opp-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        .opp-list { display: flex; flex-direction: column; gap: 0.75rem; }
 
         .opp-card {
             background: var(--white);
@@ -146,30 +143,12 @@
             transition: box-shadow 0.2s;
         }
 
-        .opp-card:hover {
-            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-        }
+        .opp-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
+        .opp-card.inactive { border-left-color: var(--border); opacity: 0.7; }
 
-        .opp-card.inactive {
-            border-left-color: var(--border);
-            opacity: 0.7;
-        }
-
-        .opp-card .title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--navy);
-            margin-bottom: 0.4rem;
-        }
-
-        .opp-card .title a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .opp-card .title a:hover {
-            text-decoration: underline;
-        }
+        .opp-card .title { font-size: 1.05rem; font-weight: 600; color: var(--navy); margin-bottom: 0.4rem; }
+        .opp-card .title a { color: inherit; text-decoration: none; }
+        .opp-card .title a:hover { text-decoration: underline; }
 
         .opp-card .meta {
             display: flex;
@@ -180,11 +159,7 @@
             margin-bottom: 0.5rem;
         }
 
-        .opp-card .meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
+        .opp-card .meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
 
         .badge {
             display: inline-block;
@@ -201,99 +176,40 @@
         .badge-type { background: #e3f2fd; color: #1565c0; }
         .badge-deadline { background: #fff3e0; color: var(--orange); }
 
-        .opp-card .description {
-            font-size: 0.88rem;
-            color: var(--text-light);
-            margin-top: 0.4rem;
-            line-height: 1.6;
-        }
+        .opp-card .description { font-size: 0.88rem; color: var(--text-light); margin-top: 0.4rem; line-height: 1.6; }
+        .opp-card .actions { margin-top: 0.75rem; }
+        .opp-card .actions a { font-size: 0.85rem; color: var(--dark-blue); text-decoration: none; font-weight: 500; }
+        .opp-card .actions a:hover { text-decoration: underline; }
 
-        .opp-card .actions {
-            margin-top: 0.75rem;
-        }
-
-        .opp-card .actions a {
-            font-size: 0.85rem;
-            color: var(--dark-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .opp-card .actions a:hover {
-            text-decoration: underline;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
-        }
-
+        .loading { text-align: center; padding: 3rem; color: var(--text-light); }
         .loading .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--navy);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            width: 40px; height: 40px;
+            border: 3px solid var(--border); border-top-color: var(--navy);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
             margin: 0 auto 1rem;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Pagination */
         .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
+            display: flex; justify-content: center; align-items: center;
+            gap: 0.5rem; margin-top: 1.5rem;
         }
-
         .pagination button {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background: var(--white);
-            cursor: pointer;
-            font-size: 0.9rem;
+            padding: 0.5rem 1rem; border: 1px solid var(--border);
+            border-radius: 4px; background: var(--white); cursor: pointer; font-size: 0.9rem;
         }
+        .pagination button:hover:not(:disabled) { background: var(--light-bg); }
+        .pagination button:disabled { opacity: 0.5; cursor: default; }
+        .pagination .page-info { font-size: 0.85rem; color: var(--text-light); }
 
-        .pagination button:hover:not(:disabled) {
-            background: var(--light-bg);
-        }
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
 
-        .pagination button:disabled {
-            opacity: 0.5;
-            cursor: default;
-        }
-
-        .pagination .page-info {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
-        }
-
-        /* Footer */
         footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-light);
-            font-size: 0.8rem;
-            border-top: 1px solid var(--border);
-            margin-top: 2rem;
+            text-align: center; padding: 2rem; color: var(--text-light);
+            font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem;
         }
-
         footer a { color: var(--dark-blue); }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .header-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
@@ -306,18 +222,29 @@
     <header>
         <div class="header-content">
             <div>
-                <h1>Congressional Contract Opportunities</h1>
-                <p>RFPs and solicitations from the House, Senate, and legislative support agencies</p>
+                <h1>Legislative Branch Contract Opportunities</h1>
+                <p>RFPs and solicitations from the U.S. House, Senate, and support agencies</p>
             </div>
             <div class="header-right">
-                <div>Data from <a href="https://sam.gov" target="_blank">SAM.gov</a></div>
-                <div id="last-updated">Loading...</div>
+                <div>
+                    <div>Data from <a href="https://sam.gov" target="_blank">SAM.gov</a></div>
+                    <div id="last-updated">Loading...</div>
+                </div>
+                <div class="feed-links">
+                    <a href="feed.xml" title="RSS Feed">RSS</a>
+                    <a href="data/opportunities.json" title="JSON data">JSON</a>
+                    <a href="#" id="csv-download" title="Download CSV">CSV</a>
+                </div>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="stats-bar" id="stats-bar">
+        <div class="about-banner">
+            <strong>About:</strong> This tool aggregates contract opportunities published by legislative branch agencies on SAM.gov, making it easier to monitor Congressional procurement activity. It tracks the U.S. Senate, House of Representatives, Architect of the Capitol, Library of Congress, Government Publishing Office, GAO, CBO, Capitol Police, and COIL.
+        </div>
+
+        <div class="stats-bar">
             <div class="stat-card">
                 <div class="label">Active Opportunities</div>
                 <div class="value" id="stat-active">-</div>
@@ -331,7 +258,7 @@
                 <div class="value" id="stat-agencies">-</div>
             </div>
             <div class="stat-card">
-                <div class="label">Response Due Soon</div>
+                <div class="label">Due Within 14 Days</div>
                 <div class="value" id="stat-due-soon">-</div>
             </div>
         </div>
@@ -339,15 +266,11 @@
         <div class="filters">
             <div>
                 <label for="filter-agency">Agency</label><br>
-                <select id="filter-agency">
-                    <option value="">All Agencies</option>
-                </select>
+                <select id="filter-agency"><option value="">All Agencies</option></select>
             </div>
             <div>
                 <label for="filter-type">Notice Type</label><br>
-                <select id="filter-type">
-                    <option value="">All Types</option>
-                </select>
+                <select id="filter-type"><option value="">All Types</option></select>
             </div>
             <div>
                 <label for="filter-status">Status</label><br>
@@ -358,8 +281,17 @@
                 </select>
             </div>
             <div>
+                <label for="filter-sort">Sort By</label><br>
+                <select id="filter-sort">
+                    <option value="published-desc">Newest First</option>
+                    <option value="published-asc">Oldest First</option>
+                    <option value="deadline-asc">Deadline (Soonest)</option>
+                    <option value="agency">Agency</option>
+                </select>
+            </div>
+            <div>
                 <label for="filter-search">Search</label><br>
-                <input type="text" id="filter-search" placeholder="Search titles and descriptions...">
+                <input type="text" id="filter-search" placeholder="Search titles, descriptions, sol#...">
             </div>
         </div>
 
@@ -378,8 +310,9 @@
     </div>
 
     <footer>
-        <p>Congressional Contract Opportunities Tracker &middot; Data sourced from <a href="https://sam.gov" target="_blank">SAM.gov</a></p>
-        <p>Monitoring: U.S. Senate, U.S. House, Architect of the Capitol, Library of Congress, Gov. Publishing Office, GAO, CBO, Capitol Police, COIL</p>
+        <p>Legislative Branch Contract Opportunities Tracker &middot; Data sourced from <a href="https://sam.gov" target="_blank">SAM.gov</a></p>
+        <p id="footer-agencies"></p>
+        <p style="margin-top:0.5rem"><a href="feed.xml">RSS Feed</a> &middot; <a href="https://github.com/jeremyschlatter-intern/congressional-rfps">Source Code</a></p>
     </footer>
 
     <script>
@@ -401,6 +334,29 @@
             'Congressional Office for International Leadership': 'COIL',
         };
 
+        // URL parameter helpers
+        function getParams() {
+            return new URLSearchParams(window.location.search);
+        }
+
+        function setParams(params) {
+            const url = new URL(window.location);
+            for (const [k, v] of Object.entries(params)) {
+                if (v) url.searchParams.set(k, v);
+                else url.searchParams.delete(k);
+            }
+            history.replaceState(null, '', url);
+        }
+
+        function restoreFiltersFromURL() {
+            const p = getParams();
+            if (p.has('agency')) document.getElementById('filter-agency').value = p.get('agency');
+            if (p.has('type')) document.getElementById('filter-type').value = p.get('type');
+            if (p.has('status')) document.getElementById('filter-status').value = p.get('status');
+            if (p.has('sort')) document.getElementById('filter-sort').value = p.get('sort');
+            if (p.has('q')) document.getElementById('filter-search').value = p.get('q');
+        }
+
         async function loadData() {
             try {
                 const resp = await fetch('data/opportunities.json');
@@ -410,27 +366,29 @@
                 allOpps = data.opportunities || [];
                 updateStats(data.stats, allOpps);
                 populateFilters(allOpps);
+                restoreFiltersFromURL();
                 applyFilters();
 
                 const updated = new Date(data.last_updated);
                 document.getElementById('last-updated').textContent =
                     `Updated: ${updated.toLocaleDateString()} ${updated.toLocaleTimeString()}`;
+
+                // Dynamic footer
+                const agencies = [...new Set(allOpps.map(o => AGENCY_SHORT[o.department] || o.department))].sort();
+                document.getElementById('footer-agencies').textContent = 'Monitoring: ' + agencies.join(', ');
             } catch (e) {
                 document.getElementById('content').innerHTML =
                     '<div class="empty-state"><p>Unable to load data. Run <code>python monitor.py</code> to generate data.</p></div>';
-                console.error('Failed to load data:', e);
             }
         }
 
         function updateStats(stats, opps) {
             document.getElementById('stat-active').textContent = stats.active || 0;
             document.getElementById('stat-total').textContent = stats.total || 0;
-            document.getElementById('stat-agencies').textContent =
-                (stats.by_department || []).length;
+            document.getElementById('stat-agencies').textContent = (stats.by_department || []).length;
 
-            // Count opportunities with response dates within 14 days
             const now = new Date();
-            const twoWeeks = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+            const twoWeeks = new Date(now.getTime() + 14 * 86400000);
             const dueSoon = opps.filter(o => {
                 if (!o.response_date || !o.is_active) return false;
                 const d = new Date(o.response_date);
@@ -444,7 +402,7 @@
             const types = new Set(opps.map(o => o.type_name).filter(Boolean));
 
             const agencySelect = document.getElementById('filter-agency');
-            [...agencies].sort().forEach(a => {
+            [...agencies].sort((a, b) => (AGENCY_SHORT[a]||a).localeCompare(AGENCY_SHORT[b]||b)).forEach(a => {
                 const opt = document.createElement('option');
                 opt.value = a;
                 opt.textContent = AGENCY_SHORT[a] || a;
@@ -454,8 +412,7 @@
             const typeSelect = document.getElementById('filter-type');
             [...types].sort().forEach(t => {
                 const opt = document.createElement('option');
-                opt.value = t;
-                opt.textContent = t;
+                opt.value = t; opt.textContent = t;
                 typeSelect.appendChild(opt);
             });
         }
@@ -464,7 +421,11 @@
             const agency = document.getElementById('filter-agency').value;
             const type = document.getElementById('filter-type').value;
             const status = document.getElementById('filter-status').value;
+            const sortBy = document.getElementById('filter-sort').value;
             const search = document.getElementById('filter-search').value.toLowerCase();
+
+            // Update URL
+            setParams({ agency, type, status, sort: sortBy, q: search });
 
             filteredOpps = allOpps.filter(o => {
                 if (agency && o.department !== agency) return false;
@@ -472,10 +433,26 @@
                 if (status === 'active' && !o.is_active) return false;
                 if (status === 'inactive' && o.is_active) return false;
                 if (search) {
-                    const text = `${o.title} ${o.description || ''} ${o.solicitation_number || ''}`.toLowerCase();
+                    const text = `${o.title} ${o.description || ''} ${o.solicitation_number || ''} ${o.office || ''}`.toLowerCase();
                     if (!text.includes(search)) return false;
                 }
                 return true;
+            });
+
+            // Sort
+            filteredOpps.sort((a, b) => {
+                switch (sortBy) {
+                    case 'published-asc':
+                        return (a.publish_date || '').localeCompare(b.publish_date || '');
+                    case 'deadline-asc':
+                        const da = a.response_date || '9999';
+                        const db = b.response_date || '9999';
+                        return da.localeCompare(db);
+                    case 'agency':
+                        return (AGENCY_SHORT[a.department]||a.department).localeCompare(AGENCY_SHORT[b.department]||b.department);
+                    default: // published-desc
+                        return (b.publish_date || '').localeCompare(a.publish_date || '');
+                }
             });
 
             currentPage = 0;
@@ -496,14 +473,13 @@
 
             content.innerHTML = '<div class="opp-list">' + pageOpps.map(renderCard).join('') + '</div>';
 
-            // Pagination
             const totalPages = Math.ceil(filteredOpps.length / PAGE_SIZE);
             const pagination = document.getElementById('pagination');
             pagination.style.display = totalPages > 1 ? 'flex' : 'none';
             document.getElementById('prev-btn').disabled = currentPage === 0;
             document.getElementById('next-btn').disabled = currentPage >= totalPages - 1;
             document.getElementById('page-info').textContent =
-                `${start + 1}-${Math.min(end, filteredOpps.length)} of ${filteredOpps.length}`;
+                `${start + 1}\u2013${Math.min(end, filteredOpps.length)} of ${filteredOpps.length}`;
         }
 
         function renderCard(opp) {
@@ -512,58 +488,77 @@
                 ? '<span class="badge badge-active">Active</span>'
                 : '<span class="badge badge-inactive">Inactive</span>';
             const typeBadge = opp.type_name
-                ? `<span class="badge badge-type">${escapeHtml(opp.type_name)}</span>`
-                : '';
+                ? `<span class="badge badge-type">${esc(opp.type_name)}</span>` : '';
 
             let deadlineInfo = '';
             if (opp.response_date && opp.is_active) {
                 const d = new Date(opp.response_date);
                 const now = new Date();
-                const daysLeft = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
-                if (daysLeft > 0 && daysLeft <= 14) {
+                const daysLeft = Math.ceil((d - now) / 86400000);
+                if (daysLeft > 0 && daysLeft <= 14)
                     deadlineInfo = `<span class="badge badge-deadline">${daysLeft} days left</span>`;
-                }
             }
 
             const publishDate = opp.publish_date ? opp.publish_date.slice(0, 10) : '';
-            const responseDate = opp.response_date
-                ? new Date(opp.response_date).toLocaleDateString()
-                : 'N/A';
+            const responseLine = opp.response_date
+                ? `<span>Due: ${new Date(opp.response_date).toLocaleDateString()}</span>` : '';
 
             const desc = opp.description
-                ? `<div class="description">${escapeHtml(opp.description.slice(0, 300))}${opp.description.length > 300 ? '...' : ''}</div>`
-                : '';
+                ? `<div class="description">${esc(opp.description.slice(0, 300))}${opp.description.length > 300 ? '...' : ''}</div>` : '';
 
             return `
                 <div class="opp-card ${opp.is_active ? '' : 'inactive'}">
                     <div class="title">
-                        <a href="${escapeHtml(opp.sam_url)}" target="_blank">${escapeHtml(opp.title)}</a>
+                        <a href="${esc(opp.sam_url)}" target="_blank">${esc(opp.title)}</a>
                     </div>
                     <div class="meta">
                         <span>${statusBadge} ${typeBadge} ${deadlineInfo}</span>
-                        <span>${escapeHtml(agency)}</span>
-                        ${opp.office ? `<span>${escapeHtml(opp.office)}</span>` : ''}
+                        <span>${esc(agency)}</span>
+                        ${opp.office ? `<span>${esc(opp.office)}</span>` : ''}
                         <span>Published: ${publishDate}</span>
-                        <span>Response Due: ${responseDate}</span>
-                        ${opp.solicitation_number ? `<span>Sol#: ${escapeHtml(opp.solicitation_number)}</span>` : ''}
+                        ${responseLine}
+                        ${opp.solicitation_number ? `<span>Sol#: ${esc(opp.solicitation_number)}</span>` : ''}
                     </div>
                     ${desc}
                     <div class="actions">
-                        <a href="${escapeHtml(opp.sam_url)}" target="_blank">View on SAM.gov &rarr;</a>
+                        <a href="${esc(opp.sam_url)}" target="_blank">View on SAM.gov &rarr;</a>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        function escapeHtml(text) {
+        function esc(text) {
             if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
         }
+
+        // CSV download
+        document.getElementById('csv-download').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (filteredOpps.length === 0) return;
+
+            const headers = ['Title','Agency','Office','Type','Solicitation #','Published','Response Due','Status','Description','SAM.gov URL'];
+            const rows = filteredOpps.map(o => [
+                o.title, AGENCY_SHORT[o.department] || o.department, o.office || '',
+                o.type_name || '', o.solicitation_number || '',
+                (o.publish_date || '').slice(0,10), (o.response_date || '').slice(0,10),
+                o.is_active ? 'Active' : 'Inactive',
+                (o.description || '').replace(/"/g, '""').slice(0, 500),
+                o.sam_url || ''
+            ]);
+
+            const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'legislative_branch_opportunities.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
 
         // Event listeners
-        ['filter-agency', 'filter-type', 'filter-status'].forEach(id => {
+        ['filter-agency', 'filter-type', 'filter-status', 'filter-sort'].forEach(id => {
             document.getElementById(id).addEventListener('change', applyFilters);
         });
 
@@ -574,14 +569,13 @@
         });
 
         document.getElementById('prev-btn').addEventListener('click', () => {
-            if (currentPage > 0) { currentPage--; renderPage(); }
+            if (currentPage > 0) { currentPage--; renderPage(); window.scrollTo(0, 0); }
         });
         document.getElementById('next-btn').addEventListener('click', () => {
             const totalPages = Math.ceil(filteredOpps.length / PAGE_SIZE);
-            if (currentPage < totalPages - 1) { currentPage++; renderPage(); }
+            if (currentPage < totalPages - 1) { currentPage++; renderPage(); window.scrollTo(0, 0); }
         });
 
-        // Load data on page load
         loadData();
     })();
     </script>

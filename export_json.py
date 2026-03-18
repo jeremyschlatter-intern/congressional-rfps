@@ -15,6 +15,13 @@ def export_json():
     opps = get_all_opportunities()
     stats = get_stats()
 
+    # Convert is_active from int to bool for cleaner JSON
+    for opp in opps:
+        opp["is_active"] = bool(opp.get("is_active"))
+        # Truncate descriptions for JSON size (full text stays in DB)
+        if opp.get("description") and len(opp["description"]) > 1000:
+            opp["description"] = opp["description"][:997] + "..."
+
     data = {
         "last_updated": datetime.now(timezone.utc).isoformat(),
         "stats": stats,

@@ -7,7 +7,7 @@ import urllib.parse
 from dataclasses import dataclass, asdict
 from typing import List, Optional
 
-from config import LEGISLATIVE_BRANCH_AGENCIES, SAM_API_BASE, SAM_PAGE_SIZE
+from config import LEGISLATIVE_BRANCH_AGENCIES, SAM_API_BASE, SAM_PAGE_SIZE, SAM_MAX_PAGES
 
 
 @dataclass
@@ -55,8 +55,6 @@ def _parse_opportunity(result: dict) -> Opportunity:
         desc_text = re.sub(r"<[^>]+>", " ", raw).strip()
         desc_text = html.unescape(desc_text)
         desc_text = re.sub(r"\s+", " ", desc_text)
-        if len(desc_text) > 500:
-            desc_text = desc_text[:497] + "..."
 
     notice_id = result.get("_id", "")
     opp_type = result.get("type", {})
@@ -91,7 +89,7 @@ def _parse_opportunity(result: dict) -> Opportunity:
     )
 
 
-def fetch_opportunities(org_id: str, active_only: bool = False, max_pages: int = 10) -> List[Opportunity]:
+def fetch_opportunities(org_id: str, active_only: bool = False, max_pages: int = SAM_MAX_PAGES) -> List[Opportunity]:
     """Fetch all opportunities for a given organization ID."""
     opportunities = []
     page = 0
