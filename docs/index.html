@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congressional Contract Opportunities</title>
+    <style>
+        :root {
+            --navy: #1a2744;
+            --dark-blue: #2c3e6b;
+            --accent: #c9a227;
+            --light-bg: #f5f6f8;
+            --white: #ffffff;
+            --text: #333;
+            --text-light: #666;
+            --border: #ddd;
+            --green: #2e7d32;
+            --red: #c62828;
+            --orange: #ef6c00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        header {
+            background: var(--navy);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .header-right a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filters label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .filters select, .filters input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: var(--white);
+        }
+
+        .filters input[type="text"] {
+            min-width: 250px;
+        }
+
+        /* Opportunity cards */
+        .opp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .opp-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--dark-blue);
+            transition: box-shadow 0.2s;
+        }
+
+        .opp-card:hover {
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .opp-card.inactive {
+            border-left-color: var(--border);
+            opacity: 0.7;
+        }
+
+        .opp-card .title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+        }
+
+        .opp-card .title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .opp-card .title a:hover {
+            text-decoration: underline;
+        }
+
+        .opp-card .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .opp-card .meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-active { background: #e8f5e9; color: var(--green); }
+        .badge-inactive { background: #fafafa; color: #999; }
+        .badge-type { background: #e3f2fd; color: #1565c0; }
+        .badge-deadline { background: #fff3e0; color: var(--orange); }
+
+        .opp-card .description {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            margin-top: 0.4rem;
+            line-height: 1.6;
+        }
+
+        .opp-card .actions {
+            margin-top: 0.75rem;
+        }
+
+        .opp-card .actions a {
+            font-size: 0.85rem;
+            color: var(--dark-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .opp-card .actions a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--navy);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--white);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--light-bg);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .pagination .page-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        footer a { color: var(--dark-blue); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .filters input[type="text"] { min-width: 100%; }
+            .opp-card .meta { flex-direction: column; gap: 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>Congressional Contract Opportunities</h1>
+                <p>RFPs and solicitations from the House, Senate, and legislative support agencies</p>
+            </div>
+            <div class="header-right">
+                <div>Data from <a href="https://sam.gov" target="_blank">SAM.gov</a></div>
+                <div id="last-updated">Loading...</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-card">
+                <div class="label">Active Opportunities</div>
+                <div class="value" id="stat-active">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Total Tracked</div>
+                <div class="value" id="stat-total">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Agencies</div>
+                <div class="value" id="stat-agencies">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Response Due Soon</div>
+                <div class="value" id="stat-due-soon">-</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div>
+                <label for="filter-agency">Agency</label><br>
+                <select id="filter-agency">
+                    <option value="">All Agencies</option>
+                </select>
+            </div>
+            <div>
+                <label for="filter-type">Notice Type</label><br>
+                <select id="filter-type">
+                    <option value="">All Types</option>
+                </select>
+            </div>
+            <div>
+                <label for="filter-status">Status</label><br>
+                <select id="filter-status">
+                    <option value="">All</option>
+                    <option value="active" selected>Active Only</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div>
+                <label for="filter-search">Search</label><br>
+                <input type="text" id="filter-search" placeholder="Search titles and descriptions...">
+            </div>
+        </div>
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading opportunities...</p>
+            </div>
+        </div>
+
+        <div class="pagination" id="pagination" style="display:none;">
+            <button id="prev-btn" disabled>Previous</button>
+            <span class="page-info" id="page-info"></span>
+            <button id="next-btn">Next</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Congressional Contract Opportunities Tracker &middot; Data sourced from <a href="https://sam.gov" target="_blank">SAM.gov</a></p>
+        <p>Monitoring: Architect of the Capitol, Library of Congress, Government Publishing Office, U.S. Capitol Police</p>
+    </footer>
+
+    <script>
+    (function() {
+        const PAGE_SIZE = 20;
+        let allOpps = [];
+        let filteredOpps = [];
+        let currentPage = 0;
+
+        const AGENCY_SHORT = {
+            'THE LEGISLATIVE BRANCH': 'U.S. Capitol Police',
+            'ARCHITECT OF THE CAPITOL': 'Architect of the Capitol',
+            'LIBRARY OF CONGRESS': 'Library of Congress',
+            'UNITED STATES GOVERNMENT PUBLISHING OFFICE': 'Gov. Publishing Office',
+        };
+
+        async function loadData() {
+            try {
+                const resp = await fetch('data/opportunities.json');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+
+                allOpps = data.opportunities || [];
+                updateStats(data.stats, allOpps);
+                populateFilters(allOpps);
+                applyFilters();
+
+                const updated = new Date(data.last_updated);
+                document.getElementById('last-updated').textContent =
+                    `Updated: ${updated.toLocaleDateString()} ${updated.toLocaleTimeString()}`;
+            } catch (e) {
+                document.getElementById('content').innerHTML =
+                    '<div class="empty-state"><p>Unable to load data. Run <code>python monitor.py</code> to generate data.</p></div>';
+                console.error('Failed to load data:', e);
+            }
+        }
+
+        function updateStats(stats, opps) {
+            document.getElementById('stat-active').textContent = stats.active || 0;
+            document.getElementById('stat-total').textContent = stats.total || 0;
+            document.getElementById('stat-agencies').textContent =
+                (stats.by_department || []).length;
+
+            // Count opportunities with response dates within 14 days
+            const now = new Date();
+            const twoWeeks = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+            const dueSoon = opps.filter(o => {
+                if (!o.response_date || !o.is_active) return false;
+                const d = new Date(o.response_date);
+                return d >= now && d <= twoWeeks;
+            }).length;
+            document.getElementById('stat-due-soon').textContent = dueSoon;
+        }
+
+        function populateFilters(opps) {
+            const agencies = new Set(opps.map(o => o.department));
+            const types = new Set(opps.map(o => o.type_name).filter(Boolean));
+
+            const agencySelect = document.getElementById('filter-agency');
+            [...agencies].sort().forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = AGENCY_SHORT[a] || a;
+                agencySelect.appendChild(opt);
+            });
+
+            const typeSelect = document.getElementById('filter-type');
+            [...types].sort().forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                typeSelect.appendChild(opt);
+            });
+        }
+
+        function applyFilters() {
+            const agency = document.getElementById('filter-agency').value;
+            const type = document.getElementById('filter-type').value;
+            const status = document.getElementById('filter-status').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+
+            filteredOpps = allOpps.filter(o => {
+                if (agency && o.department !== agency) return false;
+                if (type && o.type_name !== type) return false;
+                if (status === 'active' && !o.is_active) return false;
+                if (status === 'inactive' && o.is_active) return false;
+                if (search) {
+                    const text = `${o.title} ${o.description || ''} ${o.solicitation_number || ''}`.toLowerCase();
+                    if (!text.includes(search)) return false;
+                }
+                return true;
+            });
+
+            currentPage = 0;
+            renderPage();
+        }
+
+        function renderPage() {
+            const start = currentPage * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            const pageOpps = filteredOpps.slice(start, end);
+            const content = document.getElementById('content');
+
+            if (filteredOpps.length === 0) {
+                content.innerHTML = '<div class="empty-state"><p>No opportunities match your filters.</p></div>';
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            content.innerHTML = '<div class="opp-list">' + pageOpps.map(renderCard).join('') + '</div>';
+
+            // Pagination
+            const totalPages = Math.ceil(filteredOpps.length / PAGE_SIZE);
+            const pagination = document.getElementById('pagination');
+            pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+            document.getElementById('prev-btn').disabled = currentPage === 0;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages - 1;
+            document.getElementById('page-info').textContent =
+                `${start + 1}-${Math.min(end, filteredOpps.length)} of ${filteredOpps.length}`;
+        }
+
+        function renderCard(opp) {
+            const agency = AGENCY_SHORT[opp.department] || opp.department;
+            const statusBadge = opp.is_active
+                ? '<span class="badge badge-active">Active</span>'
+                : '<span class="badge badge-inactive">Inactive</span>';
+            const typeBadge = opp.type_name
+                ? `<span class="badge badge-type">${escapeHtml(opp.type_name)}</span>`
+                : '';
+
+            let deadlineInfo = '';
+            if (opp.response_date && opp.is_active) {
+                const d = new Date(opp.response_date);
+                const now = new Date();
+                const daysLeft = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+                if (daysLeft > 0 && daysLeft <= 14) {
+                    deadlineInfo = `<span class="badge badge-deadline">${daysLeft} days left</span>`;
+                }
+            }
+
+            const publishDate = opp.publish_date ? opp.publish_date.slice(0, 10) : '';
+            const responseDate = opp.response_date
+                ? new Date(opp.response_date).toLocaleDateString()
+                : 'N/A';
+
+            const desc = opp.description
+                ? `<div class="description">${escapeHtml(opp.description.slice(0, 300))}${opp.description.length > 300 ? '...' : ''}</div>`
+                : '';
+
+            return `
+                <div class="opp-card ${opp.is_active ? '' : 'inactive'}">
+                    <div class="title">
+                        <a href="${escapeHtml(opp.sam_url)}" target="_blank">${escapeHtml(opp.title)}</a>
+                    </div>
+                    <div class="meta">
+                        <span>${statusBadge} ${typeBadge} ${deadlineInfo}</span>
+                        <span>${escapeHtml(agency)}</span>
+                        ${opp.office ? `<span>${escapeHtml(opp.office)}</span>` : ''}
+                        <span>Published: ${publishDate}</span>
+                        <span>Response Due: ${responseDate}</span>
+                        ${opp.solicitation_number ? `<span>Sol#: ${escapeHtml(opp.solicitation_number)}</span>` : ''}
+                    </div>
+                    ${desc}
+                    <div class="actions">
+                        <a href="${escapeHtml(opp.sam_url)}" target="_blank">View on SAM.gov &rarr;</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        ['filter-agency', 'filter-type', 'filter-status'].forEach(id => {
+            document.getElementById(id).addEventListener('change', applyFilters);
+        });
+
+        let searchTimeout;
+        document.getElementById('filter-search').addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(applyFilters, 300);
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentPage > 0) { currentPage--; renderPage(); }
+        });
+        document.getElementById('next-btn').addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredOpps.length / PAGE_SIZE);
+            if (currentPage < totalPages - 1) { currentPage++; renderPage(); }
+        });
+
+        // Load data on page load
+        loadData();
+    })();
+    </script>
+</body>
+</html>

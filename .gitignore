@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+data/opportunities.db
+.env
+*.egg-info/
+venv/
+data/opportunities.db-shm
+data/opportunities.db-wal
