@@ -379,7 +379,7 @@
 
     <footer>
         <p>Congressional Contract Opportunities Tracker &middot; Data sourced from <a href="https://sam.gov" target="_blank">SAM.gov</a></p>
-        <p>Monitoring: Architect of the Capitol, Library of Congress, Government Publishing Office, U.S. Capitol Police</p>
+        <p>Monitoring: U.S. Senate, U.S. House, Architect of the Capitol, Library of Congress, Gov. Publishing Office, GAO, CBO, Capitol Police, COIL</p>
     </footer>
 
     <script>
@@ -391,9 +391,14 @@
 
         const AGENCY_SHORT = {
             'THE LEGISLATIVE BRANCH': 'U.S. Capitol Police',
+            'SENATE, THE': 'U.S. Senate',
+            'HOUSE OF REPRESENTATIVES, THE': 'U.S. House',
             'ARCHITECT OF THE CAPITOL': 'Architect of the Capitol',
             'LIBRARY OF CONGRESS': 'Library of Congress',
             'UNITED STATES GOVERNMENT PUBLISHING OFFICE': 'Gov. Publishing Office',
+            'GOVERNMENT ACCOUNTABILITY OFFICE': 'GAO',
+            'CONGRESSIONAL BUDGET OFFICE': 'CBO',
+            'Congressional Office for International Leadership': 'COIL',
         };
 
         async function loadData() {

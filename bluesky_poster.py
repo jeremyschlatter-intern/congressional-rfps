@@ -10,9 +10,16 @@ from config import BSKY_HANDLE, BSKY_PASSWORD
 # Agency short names for compact posts
 AGENCY_SHORT = {
     "THE LEGISLATIVE BRANCH": "Capitol Police",
+    "THE SENATE": "U.S. Senate",
+    "THE HOUSE OF REPRESENTATIVES": "U.S. House",
+    "SENATE, THE": "U.S. Senate",
+    "HOUSE OF REPRESENTATIVES, THE": "U.S. House",
     "ARCHITECT OF THE CAPITOL": "Architect of the Capitol",
     "LIBRARY OF CONGRESS": "Library of Congress",
     "UNITED STATES GOVERNMENT PUBLISHING OFFICE": "Gov Publishing Office",
+    "GOVERNMENT ACCOUNTABILITY OFFICE": "GAO",
+    "CONGRESSIONAL BUDGET OFFICE": "CBO",
+    "CONGRESSIONAL OFFICE FOR INTERNATIONAL LEADERSHIP": "COIL",
 }
 
 # Notice type emoji
